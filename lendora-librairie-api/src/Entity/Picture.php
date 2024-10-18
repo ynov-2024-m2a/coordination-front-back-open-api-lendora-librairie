@@ -34,6 +34,9 @@ class Picture
     #[Vich\UploadableField(mapping: "pictures", fileNameProperty:"realpath")]
     private $file;
 
+    #[ORM\OneToOne(mappedBy: 'coverBook', cascade: ['persist', 'remove'])]
+    private ?Book $book = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -107,6 +110,28 @@ class Picture
     public function setFile(?File $file): ?Picture
     {
         $this->file = $file;
+
+        return $this;
+    }
+
+    public function getBook(): ?Book
+    {
+        return $this->book;
+    }
+
+    public function setBook(?Book $book): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($book === null && $this->book !== null) {
+            $this->book->setCoverBook(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($book !== null && $book->getCoverBook() !== $this) {
+            $book->setCoverBook($this);
+        }
+
+        $this->book = $book;
 
         return $this;
     }
