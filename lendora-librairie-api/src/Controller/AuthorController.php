@@ -63,4 +63,29 @@ class AuthorController extends AbstractController
        $jsonAuthors = $serializer->serialize($author, 'json', ["groups" => "getAllAuthors"]);
        return new JsonResponse($jsonAuthors, Response::HTTP_OK, ['accept' => 'json'], true);
    }
+
+   
+   #[Route('/api/authors', name:"author.create", methods: ['POST'])]
+   public function createAuthor(Request $request, EventRepository $eventRepository, SerializerInterface $serializer, EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator): JsonResponse 
+   {
+
+        $author = $serializer->deserialize($request->getContent(), Author::class, 'json');
+        $entityManager->persist($author);
+        $entityManager->flush();
+
+        $content = $request->toArray();
+
+        if(array_key_exists('idEvent',$content) && $content['idEvent']){
+        //Comment mettre plusieurs event d'un coup ?
+        $author->addEvent($eventRepository->find( $content['idEvent']));
+        $entityManager->persist($author);
+        $entityManager->flush();
+        }
+
+        $jsonBook = $serializer->serialize($author, 'json', ['groups' => 'getAllAuthors']);
+       
+        $location = $urlGenerator->generate('author.get', ['idAuthor' => $author->getId()], UrlGeneratorInterface::ABSOLUTE_URL);
+
+         return new JsonResponse($jsonBook, Response::HTTP_CREATED, ["Location" => $location], true);
+  }
 }
