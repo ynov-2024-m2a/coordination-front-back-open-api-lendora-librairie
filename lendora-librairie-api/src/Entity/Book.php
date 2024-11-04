@@ -17,6 +17,7 @@ class Book
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['getAllBooks'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -29,12 +30,15 @@ class Book
      * @var Collection<int, Genre>
      */
     #[ORM\ManyToMany(targetEntity: Genre::class, inversedBy: 'books')]
+    #[Groups(['getAllBooks'])]
     private Collection $genre;
 
     #[ORM\OneToOne(inversedBy: 'book', cascade: ['persist', 'remove'])]
+    #[Groups(['getAllBooks'])]
     private ?Picture $coverBook = null;
 
     #[ORM\ManyToOne(inversedBy: 'books')]
+    #[Groups(['getAllBooks'])]
     private Author $author;
 
     public function __construct()

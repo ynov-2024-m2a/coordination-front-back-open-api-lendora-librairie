@@ -16,6 +16,7 @@ class Genre
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['getAllGenres'])]
     private ?string $name = null;
 
     /**

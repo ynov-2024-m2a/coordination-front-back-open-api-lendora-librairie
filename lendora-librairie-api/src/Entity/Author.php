@@ -17,12 +17,15 @@ class Author
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['getAllAuthors'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['getAllAuthors'])]
     private ?\DateTimeInterface $birthday = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['getAllAuthors'])]
     private ?string $biography = null;
 
     /**
