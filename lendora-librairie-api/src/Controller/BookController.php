@@ -48,7 +48,7 @@ class BookController extends AbstractController
     /**
         * Renvoie un book par son id
         *
-        * @param Book $author
+        * @param Book $book
         * @param SerializerInterface $serializer
         * @return JsonResponse
     */

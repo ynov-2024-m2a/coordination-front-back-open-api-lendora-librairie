@@ -7,7 +7,18 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use OpenApi\Annotations as OA;
 
+/**
+ * @OA\Schema(
+ *     schema="Author",
+ *     description="Schéma de l'entité Author",
+ *     @OA\Property(property="id", type="integer", example=1, description="ID de l'auteur"),
+ *     @OA\Property(property="name", type="string", example="John Doe", description="Nom de l'auteur"),
+ *     @OA\Property(property="biography", type="string", example="Biography of the author", description="Biographie de l'auteur")
+ * )
+ */
 #[ORM\Entity(repositoryClass: AuthorRepository::class)]
 class Author
 {
@@ -19,6 +30,10 @@ class Author
     #[ORM\Column(length: 255)]
     #[Groups(['getAllAuthors'])]
     private ?string $name = null;
+
+    #[ORM\Column(length: 255)]
+    #[Groups(['getAllAuthors'])]
+    private ?string $lastName = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Groups(['getAllAuthors'])]
@@ -33,9 +48,6 @@ class Author
      */
     #[ORM\OneToMany(targetEntity: Book::class, mappedBy: 'author')]
     private Collection $books;
-
-    #[ORM\Column(length: 255)]
-    private ?string $lastName = null;
 
     public function __construct()
     {
