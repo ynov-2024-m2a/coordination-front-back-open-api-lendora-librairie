@@ -22,6 +22,7 @@ class Book
     private ?string $title = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['getAllBooks'])]
     private ?\DateTimeInterface $releaseDate = null;
 
     #[ORM\Column(type: Types::TEXT)]
