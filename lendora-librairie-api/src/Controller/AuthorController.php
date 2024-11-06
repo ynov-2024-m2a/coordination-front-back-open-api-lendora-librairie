@@ -12,12 +12,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Contracts\Cache\TagAwareCacheInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use OpenApi\Annotations as OA;
 
 class AuthorController extends AbstractController
 {
@@ -30,7 +31,7 @@ class AuthorController extends AbstractController
     }
 
     /**
-     * Renvoie tous les auteurs
+     * Return authors
      *
      * @param AuthorRepository $repository
      * @param SerializerInterface $serializer
@@ -47,7 +48,7 @@ class AuthorController extends AbstractController
     }
 
         /**
-        * Renvoie un author par son id
+        * Return author with id
         *
         * @param Author $author
         * @param SerializerInterface $serializer
@@ -58,7 +59,58 @@ class AuthorController extends AbstractController
     
    public function getAuthor(Author $author, SerializerInterface $serializer): JsonResponse 
    {
-       $jsonBooks = $serializer->serialize($book, 'json', ["groups" => "getAllBooks"]);
-       return new JsonResponse($jsonBooks, Response::HTTP_OK, ['accept' => 'json'], true);
+       $jsonAuthor = $serializer->serialize($book, 'json', ["groups" => "getAllAuthors"]);
+       return new JsonResponse($jsonAuthor, Response::HTTP_OK, ['accept' => 'json'], true);
    }
+
+    /**
+     * Create new author
+     *
+     * @param Request $request
+     * @param SerializerInterface $serializer
+     * @param EntityManagerInterface $manager
+     * @param UrlGeneratorInterface $urlGenerator
+     * @return JsonResponse
+     */
+    #[Route('/api/author', name: 'author.post', methods: ['POST'])]
+    public function createAuthor(Request $request,  SerializerInterface $serializer, EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator, ValidatorInterface $validator, TagAwareCacheInterface $cache): JsonResponse{
+        $author = $serializer->deserialize($request->getContent(), Author::class,'json');  
+        
+        $errors = $validator->validate($author);
+        if($errors ->count() > 0){
+            return new JsonResponse($serializer->serialize($errors,'json'),JsonResponse::HTTP_BAD_REQUEST,[],true);
+        }
+        
+        $entityManager->persist($author);
+        $entityManager->flush();
+        $cache->invalidateTags(["authorCache"]);
+
+        $jsonAuthor= $serializer->serialize($author,'json');
+
+        $location = $urlGenerator->generate('author.get', ['idAuthor'=> $author->getId()], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        return new JsonResponse($jsonAuthor,Response::HTTP_CREATED,["Location" => $location],true);
+
+    }
+
+    /** 
+     * Update author with a id
+     *
+     * @param Author $author
+     * @param Request $request
+     * @param SerializerInterface $serializer
+     * @param EntityManagerInterface $entityManager
+     * @param UrlGeneratorInterface $urlGenerator
+     * @return JsonResponse
+     */
+    #[Route('/api/author/{id}', name: 'author.update', methods: ['PUT'])]
+    public function updateAuthor(Author $author, Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, TagAwareCacheInterface $cache): JsonResponse{
+
+        $updatedAuthor = $serializer->deserialize($request->getContent(), Author::class,'json', [AbstractNormalizer::OBJECT_TO_POPULATE =>$author]);
+        $entityManager->persist($updatedAuthor);
+        $entityManager->flush();
+        $cache->invalidateTags(["authorCache"]);
+        return new JsonResponse(null,JsonResponse::HTTP_NO_CONTENT,[],false);
+
+    }
 }

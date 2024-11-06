@@ -8,17 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
-use OpenApi\Annotations as OA;
 
-/**
- * @OA\Schema(
- *     schema="Author",
- *     description="Schéma de l'entité Author",
- *     @OA\Property(property="id", type="integer", example=1, description="ID de l'auteur"),
- *     @OA\Property(property="name", type="string", example="John Doe", description="Nom de l'auteur"),
- *     @OA\Property(property="biography", type="string", example="Biography of the author", description="Biographie de l'auteur")
- * )
- */
 #[ORM\Entity(repositoryClass: AuthorRepository::class)]
 class Author
 {
