@@ -76,7 +76,7 @@ nelmio_api_doc:
                 get:
                     tags:
                         - Books
-                    summary: Get all books.
+                    summary: Get all authors.
                     responses:
                         "200":
                             description: OK

@@ -37,7 +37,7 @@ class Book
     /**
      * @var Collection<int, Genre>
      */
-    #[ORM\ManyToMany(targetEntity: Genre::class, inversedBy: 'books')]
+    #[ORM\ManyToMany(targetEntity: Genre::class, inversedBy: 'authors')]
     #[Groups(['getAllBooks'])]
     private Collection $genre;
 
@@ -45,7 +45,7 @@ class Book
     #[Groups(['getAllBooks'])]
     private ?Picture $coverBook = null;
 
-    #[ORM\ManyToOne(inversedBy: 'books')]
+    #[ORM\ManyToOne(inversedBy: 'authors')]
     #[Groups(['getAllBooks'])]
     private Author $author;
 

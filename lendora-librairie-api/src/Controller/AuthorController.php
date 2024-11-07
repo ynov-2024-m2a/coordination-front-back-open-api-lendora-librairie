@@ -54,7 +54,7 @@ class AuthorController extends AbstractController
         * @param SerializerInterface $serializer
         * @return JsonResponse
     */
-    #[Route('/api/author/{idAuthor}', name:  'author.get', methods: ['GET'])]
+    #[Route('/api/authors/{idAuthor}', name:  'author.get', methods: ['GET'])]
     #[ParamConverter("author", options: ["id" => "idAuthor"])]
     
    public function getAuthor(Author $author, SerializerInterface $serializer): JsonResponse 
@@ -72,7 +72,7 @@ class AuthorController extends AbstractController
      * @param UrlGeneratorInterface $urlGenerator
      * @return JsonResponse
      */
-    #[Route('/api/author', name: 'author.post', methods: ['POST'])]
+    #[Route('/api/authors', name: 'author.post', methods: ['POST'])]
     public function createAuthor(Request $request,  SerializerInterface $serializer, EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator, ValidatorInterface $validator, TagAwareCacheInterface $cache): JsonResponse{
         $author = $serializer->deserialize($request->getContent(), Author::class,'json');  
         
