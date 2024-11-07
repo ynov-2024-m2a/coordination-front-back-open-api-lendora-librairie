@@ -1,0 +1,20 @@
+<p>books works!</p>
+<mat-list role="list">
+    <mat-list-item role="listitem">Item 1</mat-list-item>
+    <mat-list-item role="listitem">Item 2</mat-list-item>
+    <mat-list-item role="listitem">Item 3</mat-list-item>
+  </mat-list>
+
+  <div *ngIf="books.length > 0; else noBooks">
+    <ul>
+      <li *ngFor="let book of books">
+        <h3>{{ book.title }}</h3>
+        <p>Auteur: {{ book.author }}</p>
+        <p>Date de publication: {{ book.publishedDate }}</p>
+      </li>
+    </ul>
+  </div>
+  
+  <ng-template #noBooks>
+    <p>Aucun livre trouvé.</p>
+  </ng-template>

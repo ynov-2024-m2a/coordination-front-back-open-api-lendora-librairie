@@ -1,0 +1,21 @@
+@use 'custom-theme.scss' as custom-theme;
+@use '@angular/material' as mat;
+@include mat.core();
+
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inter";
+    /* background-color: #FAC0B9CC; */
+    /* background-color: #ebb5ae; */
+    // background-color: #cea09a;
+    background-color: mat.get-color-from-palette(custom-theme.$lendora-librairie-front-theme, 500);
+  }
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+

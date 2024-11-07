@@ -1,0 +1,54 @@
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$lendora-librairie-front-primary: mat.define-palette(mat.$indigo-palette);
+$lendora-librairie-front-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+// $lendora-librairie-front-primary: mat.define-palette(
+//   (
+//     50: #fcecea,
+//     100: #f7d6d1,
+//     200: #f2bfb6,
+//     300: #eda79b,
+//     400: #e89385,
+//     500: #cea09a, // Couleur principale
+//     600: #b28d8a,
+//     700: #9e7d7a,
+//     800: #8a6d6b,
+//     900: #765f5d,
+//     A100: #ffdfdf,
+//     A200: #ffb8b8,
+//     A400: #ff8c8c,
+//     A700: #ff7070
+//   )
+// );
+// The warn palette is optional (defaults to red).
+$lendora-librairie-front-warn: mat.define-palette(mat.$red-palette);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$lendora-librairie-front-theme: mat.define-light-theme((
+  color: (
+    primary: $lendora-librairie-front-primary,
+    accent: $lendora-librairie-front-accent,
+    warn: $lendora-librairie-front-warn,
+  ),
+  typography: mat.define-typography-config(),
+  density: 0
+));
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include mat.all-component-themes($lendora-librairie-front-theme);
+

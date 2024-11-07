@@ -59,7 +59,7 @@ class AuthorController extends AbstractController
     
    public function getAuthor(Author $author, SerializerInterface $serializer): JsonResponse 
    {
-       $jsonAuthor = $serializer->serialize($book, 'json', ["groups" => "getAllAuthors"]);
+       $jsonAuthor = $serializer->serialize($author, 'json', ["groups" => "getAllAuthors"]);
        return new JsonResponse($jsonAuthor, Response::HTTP_OK, ['accept' => 'json'], true);
    }
 
