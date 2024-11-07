@@ -9,6 +9,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: GenreRepository::class)]
+#[ApiResource(
+    collectionOperations: ['get', 'post'],
+    itemOperations: ['get', 'put', 'delete'],
+    normalizationContext: ['groups' => ['getAllGenres']],
+    denormalizationContext: ['groups' => ['getAllGenres']]
+)]
 class Genre
 {
     #[ORM\Id]

@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "api-platform/core",
-            "version": "v4.0.6",
+            "version": "v4.0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/api-platform/core.git",
-                "reference": "001d77174b7217433a5e16c4405c052bddf35334"
+                "reference": "64e3a5aec2fea9b15f8e821d606b61bdbf6d2f35"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/api-platform/core/zipball/001d77174b7217433a5e16c4405c052bddf35334",
-                "reference": "001d77174b7217433a5e16c4405c052bddf35334",
+                "url": "https://api.github.com/repos/api-platform/core/zipball/64e3a5aec2fea9b15f8e821d606b61bdbf6d2f35",
+                "reference": "64e3a5aec2fea9b15f8e821d606b61bdbf6d2f35",
                 "shasum": ""
             },
             "require": {
@@ -181,6 +181,9 @@
                 }
             },
             "autoload": {
+                "files": [
+                    "src/JsonLd/HydraContext.php"
+                ],
                 "psr-4": {
                     "ApiPlatform\\": "src/"
                 }
@@ -213,9 +216,9 @@
             ],
             "support": {
                 "issues": "https://github.com/api-platform/core/issues",
-                "source": "https://github.com/api-platform/core/tree/v4.0.6"
+                "source": "https://github.com/api-platform/core/tree/v4.0.8"
             },
-            "time": "2024-10-28T10:08:29+00:00"
+            "time": "2024-11-06T21:40:43+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -6567,7 +6570,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
@@ -6575,6 +6578,6 @@
         "ext-ctype": "*",
         "ext-iconv": "*"
     },
-    "platform-dev": {},
+    "platform-dev": [],
     "plugin-api-version": "2.6.0"
 }

@@ -103,14 +103,17 @@ class AuthorController extends AbstractController
      * @param UrlGeneratorInterface $urlGenerator
      * @return JsonResponse
      */
-    #[Route('/api/author/{id}', name: 'author.update', methods: ['PUT'])]
-    public function updateAuthor(Author $author, Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, TagAwareCacheInterface $cache): JsonResponse{
+    #[Route('/api/authors/{id}', name: 'author.update', methods: ['PUT'])]
+    public function updateAuthor(Author $author, Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, TagAwareCacheInterface $cache): JsonResponse
+    {
+        $updatedAuthor = $serializer->deserialize($request->getContent(), Author::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $author]);
 
-        $updatedAuthor = $serializer->deserialize($request->getContent(), Author::class,'json', [AbstractNormalizer::OBJECT_TO_POPULATE =>$author]);
         $entityManager->persist($updatedAuthor);
         $entityManager->flush();
-        $cache->invalidateTags(["authorCache"]);
-        return new JsonResponse(null,JsonResponse::HTTP_NO_CONTENT,[],false);
 
+        $cache->invalidateTags(["authorCache"]);
+
+        return new JsonResponse($serializer->serialize($updatedAuthor, 'json', ['groups' => 'getAllAuthors']), Response::HTTP_OK, [], true);
     }
+
 }

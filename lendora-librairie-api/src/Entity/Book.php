@@ -10,6 +10,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
+#[ApiResource(
+    collectionOperations: ['get', 'post'],
+    itemOperations: ['get', 'put', 'delete'],
+    normalizationContext: ['groups' => ['getAllBooks']],
+    denormalizationContext: ['groups' => ['getAllBooks']]
+)]
 class Book
 {
     #[ORM\Id]
