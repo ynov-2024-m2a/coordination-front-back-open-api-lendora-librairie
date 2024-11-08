@@ -117,4 +117,25 @@ class AuthorController extends AbstractController
         return new JsonResponse($serializer->serialize($updatedAuthor, 'json', ['groups' => 'getAllAuthors']), Response::HTTP_OK, [], true);
     }
 
+    /**
+     * Delete author with a id
+     *
+     * @param Author $books
+     * @param Request $request
+     * @param SerializerInterface $serializer
+     * @param EntityManagerInterface $entityManager
+     * @param UrlGeneratorInterface $urlGenerator
+     * @return JsonResponse
+     */
+    #[Route('/api/authors/{id}', name: 'author.delete', methods: ['DELETE'])]
+    public function deleteAuthor(Author $author, Request $request, EntityManagerInterface $entityManager, TagAwareCacheInterface $cache): JsonResponse{
+
+        $entityManager->remove($author);
+
+        $entityManager->flush();
+        $cache->invalidateTags(["authorCache"]);
+        return new JsonResponse(null,JsonResponse::HTTP_NO_CONTENT,[],false);
+
+    }
+
 }

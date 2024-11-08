@@ -37,13 +37,9 @@ export class AuthorUpdateDialogComponent implements OnInit {
     if (this.authorForm.valid) {
       const updatedAuthor: Author = this.authorForm.value;
       if(updatedAuthor  != this.author){
-        console.log('Données du formulaire auteur:', this.authorForm.value);
 
         this.authorService.updateAuthor(updatedAuthor, this.author.id).subscribe({
           next: (response) => {
-            console.log('Auteur mis à jour avec succès', response);
-
-
 
             this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
               this.router.navigate([this.router.url]).then(r => {

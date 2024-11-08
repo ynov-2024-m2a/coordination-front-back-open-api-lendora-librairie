@@ -35,4 +35,8 @@ export class AuthorService {
   updateAuthor(author: Author, id: number): Observable<Author> {
     return this.http.put<Author>(this.apiUrl+"/"+id, author);
   }
+
+  deleteAuthor(id: number): Observable<Author> {
+    return this.http.delete<Author>(this.apiUrl+"/"+id);
+  }
 }

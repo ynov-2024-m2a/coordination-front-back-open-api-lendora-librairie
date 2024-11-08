@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthorService, Author } from '../services/author.service';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -12,6 +12,7 @@ import {MatNativeDateModule} from "@angular/material/core";
 import {MatIcon} from "@angular/material/icon";
 import {HttpClientModule} from "@angular/common/http";
 import {Router} from "@angular/router";
+import {SharedService} from "../services/shared.service";
 
 @Component({
   selector: 'app-author-form',
@@ -22,10 +23,10 @@ import {Router} from "@angular/router";
   templateUrl: './author-form.component.html',
   styleUrl: './author-form.component.scss'
 })
-export class AuthorFormComponent {
+export class AuthorFormComponent  implements OnInit {
   authorForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private authorService: AuthorService, private router: Router) {
+  constructor(private fb: FormBuilder, private authorService: AuthorService, private router: Router, private sharedService: SharedService) {
     this.authorForm = this.fb.group({
       name: ['', Validators.required],
       lastName: ['', Validators.required],
@@ -34,22 +35,30 @@ export class AuthorFormComponent {
     });
   }
 
+  ngOnInit(): void {
+    this.authorForm = this.fb.group({
+      name: ['', ],
+      lastName: ['', ],
+      birthday: [null, ],
+      biography: ['']
+    });
+
+  }
+
   // Soumettre le formulaire
   onSubmit(): void {
     if (this.authorForm.valid) {
+
       const newAuthor: Author = this.authorForm.value;
       this.authorService.addAuthor(newAuthor).subscribe({
         next: (response) => {
-          console.log('Auteur ajouté avec succès', response);
-
-
-
          this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
             this.router.navigate([this.router.url]).then(r => {
+              this.sharedService.notifyFormSubmit();
+              this.ngOnInit();
               this.authorForm.reset();
+              this.authorForm.clearValidators();
 
-              this.authorForm.controls['name'].markAsPristine({ onlySelf: true });
-              this.authorForm.controls['name'].markAsUntouched({ onlySelf: true});
             });
           });
         },

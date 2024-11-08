@@ -34,7 +34,7 @@ class BookController extends AbstractController
         * @param SerializerInterface $serializer
         * @return JsonResponse
      */
-    #[Route('/api/authors', name: 'book.getAll', methods:['GET'])]
+    #[Route('/api/books', name: 'book.getAll', methods:['GET'])]
     public function getAllBooks(
         BookRepository $repository,
         SerializerInterface $serializer
@@ -57,7 +57,7 @@ class BookController extends AbstractController
         * @param SerializerInterface $serializer
         * @return JsonResponse
     */
-    #[Route('/api/authors/{idBook}', name:  'book.get', methods: ['GET'])]
+    #[Route('/api/books/{idBook}', name:  'book.get', methods: ['GET'])]
     #[ParamConverter("book", options: ["id" => "idBook"])]
     
    public function getBook(Book $book, SerializerInterface $serializer): JsonResponse 
@@ -75,7 +75,7 @@ class BookController extends AbstractController
      * @param UrlGeneratorInterface $urlGenerator
      * @return JsonResponse
      */
-    #[Route('/api/authors', name: 'book.post', methods: ['POST'])]
+    #[Route('/api/books', name: 'book.post', methods: ['POST'])]
     public function createBook(Request $request,  SerializerInterface $serializer, EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator, ValidatorInterface $validator, TagAwareCacheInterface $cache): JsonResponse{
 
         $book = $serializer->deserialize($request->getContent(), Book::class,'json');
@@ -107,7 +107,7 @@ class BookController extends AbstractController
      * @param UrlGeneratorInterface $urlGenerator
      * @return JsonResponse
      */
-    #[Route('/api/authors/{id}', name: 'book.update', methods: ['PUT'])]
+    #[Route('/api/books/{id}', name: 'book.update', methods: ['PUT'])]
     public function updateBook(Book $book, Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, TagAwareCacheInterface $cache): JsonResponse{
 
         $updatedBook = $serializer->deserialize($request->getContent(), Book::class,'json', [AbstractNormalizer::OBJECT_TO_POPULATE =>$book]);
@@ -128,7 +128,7 @@ class BookController extends AbstractController
      * @param UrlGeneratorInterface $urlGenerator
      * @return JsonResponse
      */
-    #[Route('/api/authors/{id}', name: 'book.delete', methods: ['DELETE'])]
+    #[Route('/api/books/{id}', name: 'book.delete', methods: ['DELETE'])]
     public function softDeleteBook(Book $books, Request $request, EntityManagerInterface $entityManager, TagAwareCacheInterface $cache): JsonResponse{
         
         $book = $request->toArray()["force"];
