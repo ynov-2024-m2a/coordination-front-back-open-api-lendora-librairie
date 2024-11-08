@@ -1,0 +1,55 @@
+<div class="container">
+
+
+<h2 mat-dialog-title>Page de modification</h2>
+  <div>
+
+
+<mat-dialog-content class="mat-typography">
+  <form [formGroup]="authorForm" (ngSubmit)="onSubmit()">
+    <div>
+    <mat-form-field appearance="fill">
+      <mat-label>Prénom</mat-label>
+      <input matInput formControlName="name" required />
+      <mat-error *ngIf="authorForm.controls['name'].hasError('required')">
+        Le prénom est requis.
+      </mat-error>
+    </mat-form-field>
+    </div>
+    <div>
+    <mat-form-field appearance="fill">
+      <mat-label>Nom de famille</mat-label>
+      <input matInput formControlName="lastname" required />
+      <mat-error *ngIf="authorForm.controls['lastname'].hasError('required')">
+        Le nom de famille est requis.
+      </mat-error>
+    </mat-form-field>
+    </div>
+    <div>
+    <mat-form-field appearance="fill">
+      <mat-label>Date de naissance</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="birthday" required />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      <mat-error *ngIf="authorForm.controls['birthday'].hasError('required')">
+        La date de naissance est requise.
+      </mat-error>
+    </mat-form-field>
+    </div>
+    <div>
+    <mat-form-field appearance="fill">
+      <mat-label>Biographie</mat-label>
+      <textarea matInput formControlName="biography"></textarea>
+    </mat-form-field>
+    </div>
+    <div>
+    <button mat-raised-button color="primary" type="submit">Enregistrer les modifications</button>
+    </div>
+  </form>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Fermer</button>
+</mat-dialog-actions>
+  </div>
+</div>

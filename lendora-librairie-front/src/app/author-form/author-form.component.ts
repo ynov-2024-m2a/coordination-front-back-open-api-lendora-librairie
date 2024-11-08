@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
 import {MatNativeDateModule} from "@angular/material/core";
 import {MatIcon} from "@angular/material/icon";
 import {HttpClientModule} from "@angular/common/http";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-author-form',
@@ -24,7 +25,7 @@ import {HttpClientModule} from "@angular/common/http";
 export class AuthorFormComponent {
   authorForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private authorService: AuthorService) {
+  constructor(private fb: FormBuilder, private authorService: AuthorService, private router: Router) {
     this.authorForm = this.fb.group({
       name: ['', Validators.required],
       lastName: ['', Validators.required],
@@ -40,10 +41,19 @@ export class AuthorFormComponent {
       this.authorService.addAuthor(newAuthor).subscribe({
         next: (response) => {
           console.log('Auteur ajouté avec succès', response);
-          this.authorForm.reset(); // Réinitialiser le formulaire après l'ajout
+
+
+
+         this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+            this.router.navigate([this.router.url]).then(r => {
+              this.authorForm.reset();
+
+              this.authorForm.controls['name'].markAsPristine({ onlySelf: true });
+              this.authorForm.controls['name'].markAsUntouched({ onlySelf: true});
+            });
+          });
         },
         error: (error) => {
-          console.log(newAuthor);
           console.error('Erreur lors de l\'ajout de l\'auteur, error');
         }
       });

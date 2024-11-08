@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Author;
 use App\Repository\AuthorRepository;
-use App\Repository\EventRepository;
+//use App\Repository\EventRepository;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
