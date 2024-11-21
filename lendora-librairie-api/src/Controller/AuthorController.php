@@ -48,22 +48,25 @@ class AuthorController extends AbstractController
         return new JsonResponse($jsonAuthors, Response::HTTP_OK, [], true);
     }
 
-        /**
-        * Return author with id
-        *
-        * @param Author $author
-        * @param SerializerInterface $serializer
-        * @return JsonResponse
+    /**
+    * Return author with id
+    *
+    * @param Author $author
+    * @param SerializerInterface $serializer
+    * @return JsonResponse
     */
     #[Route('/api/authors/{idAuthor}', name:  'author.get', methods: ['GET'])]
     #[ParamConverter("author", options: ["id" => "idAuthor"])]
-    
-   public function getAuthor(Author $author, SerializerInterface $serializer): JsonResponse 
-   {
-       $jsonAuthor = $serializer->serialize($author, 'json', ["groups" => "getAllAuthors"]);
-       return new JsonResponse($jsonAuthor, Response::HTTP_OK, ['accept' => 'json'], true);
-   }
+    public function getAuthor(Author $author, SerializerInterface $serializer): JsonResponse
+    {
+        $jsonBook = $serializer->serialize(
+            $author,
+            'jsonld', // Spécifiez le format JSON-LD
+            ['groups' => ['getAllAuthors']] // Utilisez vos groupes de sérialisation
+        );
 
+        return new JsonResponse($jsonBook, JsonResponse::HTTP_OK, ['Content-Type' => 'application/ld+json'], true);
+    }
     /**
      * Create new author
      *

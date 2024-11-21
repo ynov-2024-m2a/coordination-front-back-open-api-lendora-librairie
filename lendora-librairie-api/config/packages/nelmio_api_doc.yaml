@@ -72,6 +72,43 @@ nelmio_api_doc:
                         "400":
                             description: Invalid JSON.
                 security: [ ]
+            /api/authors/{id}:
+                get:
+                    tags:
+                        - Author
+                    summary: Get author by id
+                    parameters:
+                        - name: id
+                          in: path
+                          required: true
+                          schema:
+                              type: integer
+                    responses:
+                        "200":
+                            description: OK
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            id:
+                                                type: integer
+                                                example: 1
+                                            name:
+                                                type: string
+                                                example: "John"
+                                            lastName:
+                                                type: string
+                                                example: "Doe"
+                                            birthday:
+                                                type: string
+                                                format: date
+                                                example: "1980-01-01"
+                                            biography:
+                                                type: string
+                                                example: "Author of many great books."
+                        "404":
+                            description: Not found
             /api/books:
                 get:
                     tags:
@@ -118,49 +155,6 @@ nelmio_api_doc:
                                                 type: string
                         "400":
                             description: Invalid JSON.
-            /api/supplements/{id}:
-                get:
-                    tags:
-                        - Supplements
-                    summary: Get a supplement by id.
-                    parameters:
-                        - name: id
-                          in: path
-                          required: true
-                          schema:
-                              type: integer
-                    responses:
-                        "200":
-                            description: OK
-                            content:
-                                application/json:
-                                    schema:
-                                        type: object
-                                        properties:
-                                            id:
-                                                type: integer
-                                            name:
-                                                type: string
-                                            description:
-                                                type: string
-                                            price:
-                                                type: number
-                                            stock:
-                                                type: integer
-                                            ingredients:
-                                                type: array
-                                                items:
-                                                    type: string
-                                            instructions_use:
-                                                type: string
-                                            img_supplement:
-                                                type: string
-                                            availability:
-                                                type: boolean
-                                            rating:
-                                                type: number
-                        "404":
-                            description: Not found
             /api/users:
                 get:
                     tags:
