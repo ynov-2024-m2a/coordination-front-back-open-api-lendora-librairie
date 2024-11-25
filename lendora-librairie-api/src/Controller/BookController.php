@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Book;
+use App\Entity\Author;
+use App\Entity\Genre;
 use App\Repository\BookRepository;
 
 use Doctrine\ORM\EntityManagerInterface;
@@ -71,31 +73,62 @@ class BookController extends AbstractController
      *
      * @param Request $request
      * @param SerializerInterface $serializer
-     * @param EntityManagerInterface $manager
+     * @param EntityManagerInterface $entityManager
      * @param UrlGeneratorInterface $urlGenerator
      * @return JsonResponse
      */
     #[Route('/api/books', name: 'book.post', methods: ['POST'])]
-    public function createBook(Request $request,  SerializerInterface $serializer, EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator, ValidatorInterface $validator, TagAwareCacheInterface $cache): JsonResponse{
+    public function createBook(
+        Request $request,
+        SerializerInterface $serializer,
+        EntityManagerInterface $entityManager,
+        UrlGeneratorInterface $urlGenerator,
+        ValidatorInterface $validator
+    ): JsonResponse {
+        // Désérialiser les données JSON dans un objet Book
+        $data = json_decode($request->getContent(), true);
 
-        $book = $serializer->deserialize($request->getContent(), Book::class,'json');
+        $book = new Book();
+        $book->setTitle($data['title'] ?? null);
+        $book->setReleaseDate(new \DateTime($data['releaseDate'] ?? 'now'));
+        $book->setBlurb($data['blurb'] ?? null);
 
-        $errors = $validator->validate($book);
-        if($errors ->count() > 0){
-            return new JsonResponse($serializer->serialize($errors,'json'),JsonResponse::HTTP_BAD_REQUEST,[],true);
+        if (isset($data['authorId'])) {
+            $author = $entityManager->getRepository(Author::class)->find($data['authorId']);
+            if (!$author) {
+                return new JsonResponse(['message' => 'Author not found'], JsonResponse::HTTP_NOT_FOUND);
+            }
+            $book->setAuthor($author);
         }
-        
+
+        // Récupérer les genres par leurs IDs et les associer
+        if (isset($data['genreIds']) && is_array($data['genreIds'])) {
+            foreach ($data['genreIds'] as $genreId) {
+                $genre = $entityManager->getRepository(Genre::class)->find($genreId);
+                if ($genre) {
+                    $book->addGenre($genre);
+                }
+            }
+        }
+
+        // Valider les données du livre
+        $errors = $validator->validate($book);
+        if ($errors->count() > 0) {
+            return new JsonResponse($serializer->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
+        }
+
         $entityManager->persist($book);
         $entityManager->flush();
-        $cache->invalidateTags(["bookCache"]);
 
-        $jsonBook= $serializer->serialize($book,'json');
-
-        $location = $urlGenerator->generate('book.get', ['idBook'=> $book->getId()], UrlGeneratorInterface::ABSOLUTE_URL);
-
-        return new JsonResponse($jsonBook,Response::HTTP_CREATED,["Location" => $location],true);
-
+        $location = $urlGenerator->generate('book.get', ['idBook' => $book->getId()], UrlGeneratorInterface::ABSOLUTE_URL);
+        return new JsonResponse(
+            $serializer->serialize($book, 'json', ['groups' => ['getAllBooks']]),
+            JsonResponse::HTTP_CREATED,
+            ['Location' => $location],
+            true
+        );
     }
+
 
     /** 
      * Update book with a id

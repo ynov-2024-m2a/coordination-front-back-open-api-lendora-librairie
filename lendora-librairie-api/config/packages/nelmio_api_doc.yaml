@@ -128,77 +128,50 @@ nelmio_api_doc:
                                                     type: string
                                                 releaseDate:
                                                     type: date
-                post:
-                    tags:
-                        - Categories
-                    summary: Create a new category.
-
-                    requestBody:
-                        content:
-                            application/json:
-                                schema:
-                                    type: object
-                                    properties:
-                                        name:
-                                            type: string
-                    responses:
-                        "201":
-                            description: Created
-                            content:
-                                application/json:
-                                    schema:
-                                        type: object
-                                        properties:
-                                            id:
-                                                type: integer
-                                            name:
-                                                type: string
-                        "400":
-                            description: Invalid JSON.
-            /api/users:
-                get:
-                    tags:
-                        - Users
-                    summary: Get all users.
-                    responses:
-                        "200":
-                            description: OK
-                            content:
-                                application/json:
-                                    schema:
-                                        type: array
-                                        items:
-                                            type: object
-                                            properties:
-                                                id:
-                                                    type: integer
-                                                email:
+                                                blurb:
                                                     type: string
-                                                roles:
-                                                    type: array
-                                                    items:
-                                                        type: string
+                                                genre:
+                                                    type: collection
+                                                author:
+                                                    type: collection
                 post:
                     tags:
-                        - Users
-                    summary: Create a new user.
+                        - Books
+                    summary: Create a new book
+                    description: Creates a new book and associates it with an author and one or more genres.
                     requestBody:
+                        required: true
                         content:
                             application/json:
                                 schema:
                                     type: object
+                                    required:
+                                        - title
+                                        - releaseDate
+                                        - blurb
+                                        - authorId
                                     properties:
-                                        email:
+                                        title:
                                             type: string
-                                        password:
+                                            example: "My Good Book"
+                                        releaseDate:
                                             type: string
-                                        roles:
+                                            format: date-time
+                                            example: "2025-11-11T00:00:00+00:00"
+                                        blurb:
+                                            type: string
+                                            example: "This is a good book about Symfony and API."
+                                        authorId:
+                                            type: integer
+                                            example: 10
+                                        genreIds:
                                             type: array
                                             items:
-                                                type: string
+                                                type: integer
+                                            example: [ 2, 3 ]
                     responses:
                         "201":
-                            description: Created
+                            description: Book created successfully
                             content:
                                 application/json:
                                     schema:
@@ -206,44 +179,64 @@ nelmio_api_doc:
                                         properties:
                                             id:
                                                 type: integer
-                                            email:
+                                                example: 5
+                                            title:
                                                 type: string
-                                            roles:
+                                                example: "My Good Book"
+                                            releaseDate:
+                                                type: string
+                                                format: date-time
+                                                example: "2025-11-11T00:00:00+00:00"
+                                            blurb:
+                                                type: string
+                                                example: "This is a good book about Symfony and API."
+                                            author:
+                                                type: object
+                                                properties:
+                                                    id:
+                                                        type: integer
+                                                        example: 1
+                                                    name:
+                                                        type: string
+                                                        example: "John"
+                                                    lastName:
+                                                        type: string
+                                                        example: "Doe"
+                                            genres:
                                                 type: array
                                                 items:
-                                                    type: string
+                                                    type: object
+                                                    properties:
+                                                        id:
+                                                            type: integer
+                                                            example: 2
+                                                        name:
+                                                            type: string
+                                                            example: "Fiction"
                         "400":
-                            description: Invalid JSON.
-            /api/users/{id}:
-                get:
-                    tags:
-                        - Users
-                    summary: Get a user by id.
-                    parameters:
-                        - name: id
-                          in: path
-                          required: true
-                          schema:
-                              type: integer
-                    responses:
-                        "200":
-                            description: OK
+                            description: Validation error
                             content:
                                 application/json:
                                     schema:
                                         type: object
                                         properties:
-                                            id:
-                                                type: integer
-                                            email:
+                                            message:
                                                 type: string
-                                            roles:
-                                                type: array
-                                                items:
+                                                example: "Validation failed."
+                                            errors:
+                                                type: object
+                                                additionalProperties:
                                                     type: string
                         "404":
-                            description: Not found
-
+                            description: Author or Genre not found
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            message:
+                                                type: string
+                                                example: "Author not found."
     areas: # to filter documented areas
         path_patterns:
             - ^/api(?!/doc$)

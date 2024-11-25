@@ -18,14 +18,15 @@ class Book
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['getAllBooks'])]
+    #[Groups(['getAllBooks', 'getAllAuthors'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Groups(['getAllBooks'])]
+    #[Groups(['getAllBooks', 'getAllAuthors'])]
     private ?\DateTimeInterface $releaseDate = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['getAllBooks', 'getAllAuthors'])]
     private ?string $blurb = null;
 
     /**
@@ -36,7 +37,6 @@ class Book
     private Collection $genre;
 
     #[ORM\OneToOne(inversedBy: 'book', cascade: ['persist', 'remove'])]
-    #[Groups(['getAllBooks'])]
     private ?Picture $coverBook = null;
 
     #[ORM\ManyToOne(inversedBy: 'authors')]

@@ -26,11 +26,11 @@ class Author
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['getAllAuthors'])]
+    #[Groups(['getAllAuthors', 'getAllBooks'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['getAllAuthors'])]
+    #[Groups(['getAllAuthors', 'getAllBooks'])]
     private ?string $lastName = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
@@ -45,6 +45,7 @@ class Author
      * @var Collection<int, Book>
      */
     #[ORM\OneToMany(targetEntity: Book::class, mappedBy: 'author')]
+    #[Groups(['getAllAuthors'])]
     private Collection $books;
 
     public function __construct()

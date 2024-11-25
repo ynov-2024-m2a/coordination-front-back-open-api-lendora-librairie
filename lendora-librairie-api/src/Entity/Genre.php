@@ -23,13 +23,14 @@ class Genre
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['getAllGenres'])]
+    #[Groups(['getAllGenres', 'getAllBooks'])]
     private ?string $name = null;
 
     /**
      * @var Collection<int, Book>
      */
     #[ORM\ManyToMany(targetEntity: Book::class, mappedBy: 'genre')]
+    #[Groups(['getAllGenres'])]
     private Collection $books;
 
     public function __construct()
