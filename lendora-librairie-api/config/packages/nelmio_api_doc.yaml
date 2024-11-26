@@ -292,6 +292,119 @@ nelmio_api_doc:
                                             message:
                                                 type: string
                                                 example: "Author not found."
+            /api/books/{id}:
+                put:
+                    tags:
+                        - Books
+                    summary: Update an existing book
+                    description: Updates the details of an existing book and optionally updates its associated author and genres.
+                    parameters:
+                        - name: id
+                          in: path
+                          required: true
+                          description: The ID of the book to update
+                          schema:
+                              type: integer
+                              example: 1
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    type: object
+                                    required:
+                                        - title
+                                        - releaseDate
+                                        - blurb
+                                        - authorId
+                                    properties:
+                                        title:
+                                            type: string
+                                            example: "Updated Book Title"
+                                        releaseDate:
+                                            type: string
+                                            format: date-time
+                                            example: "2025-12-01T00:00:00+00:00"
+                                        blurb:
+                                            type: string
+                                            example: "This is an updated description for the book."
+                                        authorId:
+                                            type: integer
+                                            example: 12
+                                        genreIds:
+                                            type: array
+                                            items:
+                                                type: integer
+                                            example: [ 4, 5 ]
+                    responses:
+                        "200":
+                            description: Book updated successfully
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            id:
+                                                type: integer
+                                                example: 12
+                                            title:
+                                                type: string
+                                                example: "Updated Book Title"
+                                            releaseDate:
+                                                type: string
+                                                format: date-time
+                                                example: "2025-12-01T00:00:00+00:00"
+                                            blurb:
+                                                type: string
+                                                example: "This is an updated description for the book."
+                                            author:
+                                                type: object
+                                                properties:
+                                                    id:
+                                                        type: integer
+                                                        example: 12
+                                                    name:
+                                                        type: string
+                                                        example: "Jane"
+                                                    lastName:
+                                                        type: string
+                                                        example: "Doe"
+                                            genres:
+                                                type: array
+                                                items:
+                                                    type: object
+                                                    properties:
+                                                        id:
+                                                            type: integer
+                                                            example: 4
+                                                        name:
+                                                            type: string
+                                                            example: "Science Fiction"
+                        "400":
+                            description: Validation error
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            message:
+                                                type: string
+                                                example: "Validation failed."
+                                            errors:
+                                                type: object
+                                                additionalProperties:
+                                                    type: string
+                        "404":
+                            description: Book, Author, or Genre not found
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            message:
+                                                type: string
+                                                example: "Book not found."
+
     areas: # to filter documented areas
         path_patterns:
             - ^/api(?!/doc$)

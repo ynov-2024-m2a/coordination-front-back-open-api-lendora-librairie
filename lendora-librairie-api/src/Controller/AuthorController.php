@@ -114,7 +114,7 @@ class AuthorController extends AbstractController
         // Sauvegarde de l'entité
         $entityManager->persist($author);
         $entityManager->flush();
-        $cache->invalidateTags(["authorCache"]);
+        $cache->invalidateTags(["authorsCache"]);
 
         // Génération de la réponse JSON-LD
         $jsonAuthor = $serializer->serialize($author, 'jsonld', ['groups' => ['getAllAuthors']]);
@@ -151,7 +151,7 @@ class AuthorController extends AbstractController
         $entityManager->persist($updatedAuthor);
         $entityManager->flush();
 
-        $cache->invalidateTags(["authorCache"]);
+        $cache->invalidateTags(["authorsCache"]);
 
         return new JsonResponse($serializer->serialize($updatedAuthor, 'json', ['groups' => 'getAllAuthors']), Response::HTTP_OK, [], true);
     }
@@ -172,7 +172,7 @@ class AuthorController extends AbstractController
         $entityManager->remove($author);
 
         $entityManager->flush();
-        $cache->invalidateTags(["authorCache"]);
+        $cache->invalidateTags(["authorsCache"]);
         return new JsonResponse(null,JsonResponse::HTTP_NO_CONTENT,[],false);
 
     }

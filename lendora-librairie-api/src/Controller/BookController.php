@@ -75,6 +75,7 @@ class BookController extends AbstractController
      * @param SerializerInterface $serializer
      * @param EntityManagerInterface $entityManager
      * @param UrlGeneratorInterface $urlGenerator
+     * @param ValidatorInterface $validator
      * @return JsonResponse
      */
     #[Route('/api/books', name: 'book.post', methods: ['POST'])]
@@ -135,20 +136,47 @@ class BookController extends AbstractController
      *
      * @param Book $book
      * @param Request $request
-     * @param SerializerInterface $serializer
      * @param EntityManagerInterface $entityManager
-     * @param UrlGeneratorInterface $urlGenerator
+     * @param ValidatorInterface $validator ,
+     * @param TagAwareCacheInterface $cache
      * @return JsonResponse
      */
     #[Route('/api/books/{id}', name: 'book.update', methods: ['PUT'])]
-    public function updateBook(Book $book, Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, TagAwareCacheInterface $cache): JsonResponse{
+    public function updateBook(
+        Book $book,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        ValidatorInterface $validator,
+        TagAwareCacheInterface $cache
+    ): JsonResponse {
+        // Décoder les données de la requête
+        $data = json_decode($request->getContent(), true);
 
-        $updatedBook = $serializer->deserialize($request->getContent(), Book::class,'json', [AbstractNormalizer::OBJECT_TO_POPULATE =>$book]);
-        $entityManager->persist($updatedBook);
+        if (!$data) {
+            return new JsonResponse(['message' => 'Invalid JSON.'], JsonResponse::HTTP_BAD_REQUEST);
+        }
+
+        // Mettre à jour les champs du livre
+        $book->setTitle($data['title'] ?? $book->getTitle());
+        $book->setReleaseDate(new \DateTime($data['releaseDate'] ?? $book->getReleaseDate()->format('Y-m-d H:i:s')));
+        $book->setBlurb($data['blurb'] ?? $book->getBlurb());
+
+        // Valider les données mises à jour
+        $errors = $validator->validate($book);
+        if ($errors->count() > 0) {
+            $errorsResponse = [];
+            foreach ($errors as $error) {
+                $errorsResponse[$error->getPropertyPath()] = $error->getMessage();
+            }
+            return new JsonResponse(['message' => 'Validation failed.', 'errors' => $errorsResponse], JsonResponse::HTTP_BAD_REQUEST);
+        }
+
+        // Sauvegarder les modifications
+        $entityManager->persist($book);
         $entityManager->flush();
         $cache->invalidateTags(["bookCache"]);
-        return new JsonResponse(null,JsonResponse::HTTP_NO_CONTENT,[],false);
 
+        return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
     }
 
     /** 
@@ -156,9 +184,8 @@ class BookController extends AbstractController
      *
      * @param Book $books
      * @param Request $request
-     * @param SerializerInterface $serializer
      * @param EntityManagerInterface $entityManager
-     * @param UrlGeneratorInterface $urlGenerator
+     * @param TagAwareCacheInterface $cache
      * @return JsonResponse
      */
     #[Route('/api/books/{id}', name: 'book.delete', methods: ['DELETE'])]
@@ -169,7 +196,6 @@ class BookController extends AbstractController
             $entityManager->remove($books);
             
         }
-
         $entityManager->flush();
         $cache->invalidateTags(["bookCache"]);
         return new JsonResponse(null,JsonResponse::HTTP_NO_CONTENT,[],false);
