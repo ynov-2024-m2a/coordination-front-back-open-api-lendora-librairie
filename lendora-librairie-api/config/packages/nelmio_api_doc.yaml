@@ -1,0 +1,412 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: Lendora Librairie
+            description: This is an awesome app!
+            version: 1.0.0
+            x-build: #CommitHash
+        security:
+            - Bearer: []
+        paths:
+            /api/authors:
+                get:
+                    tags:
+                        - Authors
+                    summary: Get all authors.
+                    responses:
+                        "200":
+                            description: OK
+                            content:
+                                application/json:
+                                    schema:
+                                        type: array
+                                        items:
+                                            type: object
+                                            properties:
+                                                id:
+                                                    type: integer
+                                                name:
+                                                    type: string
+                                                lastName:
+                                                    type: string
+                                                birthday:
+                                                    type: date
+                                                biography:
+                                                    type: string
+
+                post:
+                    tags:
+                        - Author
+                    summary: Create a new author with JSON-LD
+                    requestBody:
+                        required: true
+                        content:
+                            application/ld+json:
+                                schema:
+                                    type: object
+                                    required:
+                                        - name
+                                        - lastName
+                                        - biography
+                                    properties:
+                                        "@context":
+                                            type: string
+                                            example: "/api/contexts/Author"
+                                        "@type":
+                                            type: string
+                                            example: "Author"
+                                        name:
+                                            type: string
+                                            example: "John"
+                                        lastName:
+                                            type: string
+                                            example: "Doe"
+                                        birthday:
+                                            type: string
+                                            format: date
+                                            example: "1980-01-01"
+                                        biography:
+                                            type: string
+                                            example: "Author of many great books."
+                    responses:
+                        "201":
+                            description: Author created successfully
+                            content:
+                                application/ld+json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            "@context":
+                                                type: string
+                                                example: "/api/contexts/Author"
+                                            "@id":
+                                                type: string
+                                                example: "/api/authors/1"
+                                            "@type":
+                                                type: string
+                                                example: "Author"
+                                            name:
+                                                type: string
+                                                example: "John"
+                                            lastName:
+                                                type: string
+                                                example: "Doe"
+                                            birthday:
+                                                type: string
+                                                format: date
+                                                example: "1980-01-01"
+                                            biography:
+                                                type: string
+                                                example: "Author of many great books."
+                        "400":
+                            description: Invalid JSON.
+                security: [ ]
+            /api/authors/{id}:
+                get:
+                    tags:
+                        - Author
+                    summary: Get author by id
+                    parameters:
+                        - name: id
+                          in: path
+                          required: true
+                          schema:
+                              type: integer
+                    responses:
+                        "200":
+                            description: OK
+                            content:
+                                application/ld+json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            "@context":
+                                                type: string
+                                                example: "/api/contexts/Author"
+                                            "@id":
+                                                type: string
+                                                example: "/api/authors/11"
+                                            "@type":
+                                                type: string
+                                                example: "Author"
+                                            id:
+                                                type: integer
+                                                example: 11
+                                            name:
+                                                type: string
+                                                example: "John"
+                                            lastName:
+                                                type: string
+                                                example: "Doe"
+                                            birthday:
+                                                type: string
+                                                format: date
+                                                example: "1980-01-01"
+                                            biography:
+                                                type: string
+                                                example: "Author of many great books."
+                        "404":
+                            description: Not found
+                            content:
+                                application/ld+json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            "@context":
+                                                type: string
+                                                example: "/api/contexts/Error"
+                                            "@type":
+                                                type: string
+                                                example: "hydra:Error"
+                                            "hydra:title":
+                                                type: string
+                                                example: "An error occurred"
+                                            "hydra:description":
+                                                type: string
+                                                example: "Author not found"
+            /api/books:
+                get:
+                    tags:
+                        - Books
+                    summary: Get all authors.
+                    responses:
+                        "200":
+                            description: OK
+                            content:
+                                application/json:
+                                    schema:
+                                        type: array
+                                        items:
+                                            type: object
+                                            properties:
+                                                title:
+                                                    type: string
+                                                releaseDate:
+                                                    type: date
+                                                blurb:
+                                                    type: string
+                                                genre:
+                                                    type: collection
+                                                author:
+                                                    type: collection
+                post:
+                    tags:
+                        - Books
+                    summary: Create a new book
+                    description: Creates a new book and associates it with an author and one or more genres.
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    type: object
+                                    required:
+                                        - title
+                                        - releaseDate
+                                        - blurb
+                                        - authorId
+                                    properties:
+                                        title:
+                                            type: string
+                                            example: "My Good Book"
+                                        releaseDate:
+                                            type: string
+                                            format: date-time
+                                            example: "2025-11-11T00:00:00+00:00"
+                                        blurb:
+                                            type: string
+                                            example: "This is a good book about Symfony and API."
+                                        authorId:
+                                            type: integer
+                                            example: 10
+                                        genreIds:
+                                            type: array
+                                            items:
+                                                type: integer
+                                            example: [ 2, 3 ]
+                    responses:
+                        "201":
+                            description: Book created successfully
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            id:
+                                                type: integer
+                                                example: 5
+                                            title:
+                                                type: string
+                                                example: "My Good Book"
+                                            releaseDate:
+                                                type: string
+                                                format: date-time
+                                                example: "2025-11-11T00:00:00+00:00"
+                                            blurb:
+                                                type: string
+                                                example: "This is a good book about Symfony and API."
+                                            author:
+                                                type: object
+                                                properties:
+                                                    id:
+                                                        type: integer
+                                                        example: 1
+                                                    name:
+                                                        type: string
+                                                        example: "John"
+                                                    lastName:
+                                                        type: string
+                                                        example: "Doe"
+                                            genres:
+                                                type: array
+                                                items:
+                                                    type: object
+                                                    properties:
+                                                        id:
+                                                            type: integer
+                                                            example: 2
+                                                        name:
+                                                            type: string
+                                                            example: "Fiction"
+                        "400":
+                            description: Validation error
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            message:
+                                                type: string
+                                                example: "Validation failed."
+                                            errors:
+                                                type: object
+                                                additionalProperties:
+                                                    type: string
+                        "404":
+                            description: Author or Genre not found
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            message:
+                                                type: string
+                                                example: "Author not found."
+            /api/books/{id}:
+                put:
+                    tags:
+                        - Books
+                    summary: Update an existing book
+                    description: Updates the details of an existing book and optionally updates its associated author and genres.
+                    parameters:
+                        - name: id
+                          in: path
+                          required: true
+                          description: The ID of the book to update
+                          schema:
+                              type: integer
+                              example: 1
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    type: object
+                                    required:
+                                        - title
+                                        - releaseDate
+                                        - blurb
+                                        - authorId
+                                    properties:
+                                        title:
+                                            type: string
+                                            example: "Updated Book Title"
+                                        releaseDate:
+                                            type: string
+                                            format: date-time
+                                            example: "2025-12-01T00:00:00+00:00"
+                                        blurb:
+                                            type: string
+                                            example: "This is an updated description for the book."
+                                        authorId:
+                                            type: integer
+                                            example: 12
+                                        genreIds:
+                                            type: array
+                                            items:
+                                                type: integer
+                                            example: [ 4, 5 ]
+                    responses:
+                        "200":
+                            description: Book updated successfully
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            id:
+                                                type: integer
+                                                example: 12
+                                            title:
+                                                type: string
+                                                example: "Updated Book Title"
+                                            releaseDate:
+                                                type: string
+                                                format: date-time
+                                                example: "2025-12-01T00:00:00+00:00"
+                                            blurb:
+                                                type: string
+                                                example: "This is an updated description for the book."
+                                            author:
+                                                type: object
+                                                properties:
+                                                    id:
+                                                        type: integer
+                                                        example: 12
+                                                    name:
+                                                        type: string
+                                                        example: "Jane"
+                                                    lastName:
+                                                        type: string
+                                                        example: "Doe"
+                                            genres:
+                                                type: array
+                                                items:
+                                                    type: object
+                                                    properties:
+                                                        id:
+                                                            type: integer
+                                                            example: 4
+                                                        name:
+                                                            type: string
+                                                            example: "Science Fiction"
+                        "400":
+                            description: Validation error
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            message:
+                                                type: string
+                                                example: "Validation failed."
+                                            errors:
+                                                type: object
+                                                additionalProperties:
+                                                    type: string
+                        "404":
+                            description: Book, Author, or Genre not found
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            message:
+                                                type: string
+                                                example: "Book not found."
+
+    areas: # to filter documented areas
+        path_patterns:
+            - ^/api(?!/doc$)
+        host_patterns:
+            - ^api\.

@@ -1,0 +1,52 @@
+<div class="container">
+<h1>Formulaire d'ajout d'un nouvel auteur</h1>
+
+  <div>
+<form [formGroup]="authorForm" (ngSubmit)="onSubmit()">
+  <div>
+    <mat-form-field appearance="fill">
+      <mat-label>Nom</mat-label>
+      <input matInput formControlName="name" required />
+      <mat-error *ngIf="authorForm.controls['name'].hasError('required')">
+        Le nom est requis.
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <div>
+    <mat-form-field appearance="fill">
+      <mat-label>Prénom</mat-label>
+      <input matInput formControlName="lastName" required />
+      <mat-error *ngIf="authorForm.controls['lastName'].hasError('required')">
+        Le prénom est requis.
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <div>
+    <mat-form-field appearance="fill">
+      <mat-label>Date de naissance</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="birthday" required>
+      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="picker">
+        <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+      </mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      <mat-error *ngIf="authorForm.controls['birthday'].hasError('required')">
+        La date de naissance est requise.
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <div>
+    <mat-form-field appearance="fill">
+      <mat-label>Biographie</mat-label>
+      <textarea matInput formControlName="biography"></textarea>
+    </mat-form-field>
+  </div>
+<div>
+  <button mat-raised-button color="success" type="submit" [disabled]="authorForm.invalid">Ajouter l'auteur</button>
+</div>
+</form>
+  </div>
+</div>

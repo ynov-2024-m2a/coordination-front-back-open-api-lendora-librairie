@@ -1,0 +1,19 @@
+div{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 10px 10px;
+}
+
+mat-card{
+  flex-basis: 500px;
+}
+
+.container{
+  background-color: rgba(149, 199, 188, 0.21);
+  border-radius: 30px 30px 30px 30px;
+  padding: 10px 10px 10px 10px;
+  margin : 10px 10px 10px 10px;
+}
