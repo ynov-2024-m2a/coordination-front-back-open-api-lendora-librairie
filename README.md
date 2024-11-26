@@ -1,2 +1,48 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/v_1A_eqe)
-[![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-2e0aaae1b6195c2367325f4f02e2d04e9abb55f0b24a779b69b11b9e10269abc.svg)](https://classroom.github.com/online_ide?assignment_repo_id=16555836&assignment_repo_type=AssignmentRepo)
+## Require
+
+Into ./lendora-librairie-api :
+- Install composer (https://getcomposer.org/download/)
+- Install php (https://www.php.net/manual/en/install.php)
+
+Into ./lendora-librairie-front :
+- Install npm
+- Install angular/cli (npm install -g @angular/cli@17)
+
+## Front
+### Init the dependances
+``
+npm install
+``
+### Start the project
+``
+ng serve
+``
+
+## Back 
+### Init the dependances
+``
+composer install
+``
+### Setup your database :
+
+From the .env file, create a .env.local file and update the database URL accordingly.
+
+- Setting up the database :
+``
+php bin/console doctrine:database:create
+``
+- Adapt the database schema : 
+``
+php bin/console doctrine:schema:update --force
+``
+- Load the fixtures :
+``
+php bin/console doctrine:fixtures:load
+``
+### Start the project
+``
+symfony serve
+``
+- For doc api : ``http://127.0.0.1:8000/api/doc``
+- For API : ``http://127.0.0.1:8000/api/books``
+
