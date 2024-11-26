@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Author;
 use App\Repository\AuthorRepository;
 //use App\Repository\EventRepository;
-
+use Symfony\Contracts\Cache\ItemInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,10 +41,17 @@ class AuthorController extends AbstractController
     #[Route('/api/authors', name: 'author.getAll', methods:['GET'])]
     public function getAllAuthors(
         AuthorRepository $repository,
-        SerializerInterface $serializer
+        SerializerInterface $serializer,
+        TagAwareCacheInterface $cache
     ): JsonResponse {
-        $authors = $repository->findAll();
-        $jsonAuthors = $serializer->serialize($authors, 'json', ["groups" => "getAllAuthors"]);
+        //$authors = $repository->findAll();
+        $idCache = "getAllAuthors";
+        $jsonAuthors = $cache->get($idCache, function (ItemInterface $item) use ($repository, $serializer) {
+            $item->tag("authorsCache");
+            $authorsList = $repository->findAll();
+            return $serializer->serialize($authorsList, 'json', ['groups' => 'getAllAuthors']);
+        });
+        //$jsonAuthors = $serializer->serialize($authors, 'json', ["groups" => "getAllAuthors"]);
         return new JsonResponse($jsonAuthors, Response::HTTP_OK, [], true);
     }
 
@@ -57,8 +64,9 @@ class AuthorController extends AbstractController
     */
     #[Route('/api/authors/{idAuthor}', name:  'author.get', methods: ['GET'])]
     #[ParamConverter("author", options: ["id" => "idAuthor"])]
-    public function getAuthor(Author $author, SerializerInterface $serializer): JsonResponse
+    public function getAuthor(Author $author, SerializerInterface $serializer, TagAwareCacheInterface $cache): JsonResponse
     {
+
         $jsonBook = $serializer->serialize(
             $author,
             'jsonld', // Spécifiez le format JSON-LD
@@ -74,6 +82,8 @@ class AuthorController extends AbstractController
      * @param SerializerInterface $serializer
      * @param EntityManagerInterface $manager
      * @param UrlGeneratorInterface $urlGenerator
+     * @param ValidatorInterface $validator
+     * @param TagAwareCacheInterface $cache
      * @return JsonResponse
      */
     #[Route('/api/authors', name: 'author.post', methods: ['POST'])]

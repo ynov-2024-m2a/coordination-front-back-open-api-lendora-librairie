@@ -20,7 +20,7 @@ use Symfony\Contracts\Cache\TagAwareCacheInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 class BookController extends AbstractController
 {
-    #[Route('/book', name: 'app_book')]
+    #[Route('/books', name: 'app_book')]
     public function index(): JsonResponse
     {
         return $this->json([

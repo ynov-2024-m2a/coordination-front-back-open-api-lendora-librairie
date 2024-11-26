@@ -16,7 +16,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 class GenreController extends AbstractController
 {
-    #[Route('/genre', name: 'app_genre')]
+    #[Route('/genres', name: 'app_genre')]
     public function index(): JsonResponse
     {
         return $this->json([
@@ -55,7 +55,7 @@ class GenreController extends AbstractController
         * @param SerializerInterface $serializer
         * @return JsonResponse
     */
-    #[Route('/api/genre/{idGenre}', name:  'genre.get', methods: ['GET'])]
+    #[Route('/api/genres/{idGenre}', name:  'genre.get', methods: ['GET'])]
     #[ParamConverter("genre", options: ["id" => "idGenre"])]
     
    public function getGenre(Genre $genre, SerializerInterface $serializer): JsonResponse 
@@ -73,7 +73,7 @@ class GenreController extends AbstractController
      * @param UrlGeneratorInterface $urlGenerator
      * @return JsonResponse
      */
-    #[Route('/api/genre', name: 'genre.post', methods: ['POST'])]
+    #[Route('/api/genres', name: 'genre.post', methods: ['POST'])]
     public function createGenre(Request $request,  SerializerInterface $serializer, EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator, ValidatorInterface $validator, TagAwareCacheInterface $cache): JsonResponse{
         $genre = $serializer->deserialize($request->getContent(), Genre::class,'json');  
         
@@ -104,7 +104,7 @@ class GenreController extends AbstractController
      * @param UrlGeneratorInterface $urlGenerator
      * @return JsonResponse
      */
-    #[Route('/api/genre/{id}', name: 'genre.update', methods: ['PUT'])]
+    #[Route('/api/genres/{id}', name: 'genre.update', methods: ['PUT'])]
     public function updateGenre(Genre $genre, Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, TagAwareCacheInterface $cache): JsonResponse{
 
         $updatedGenre = $serializer->deserialize($request->getContent(), Genre::class,'json', [AbstractNormalizer::OBJECT_TO_POPULATE =>$genre]);
