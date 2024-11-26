@@ -77,24 +77,48 @@ class AuthorController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/api/authors', name: 'author.post', methods: ['POST'])]
-    public function createAuthor(Request $request,  SerializerInterface $serializer, EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator, ValidatorInterface $validator, TagAwareCacheInterface $cache): JsonResponse{
-        $author = $serializer->deserialize($request->getContent(), Author::class,'json');  
-        
+    public function createAuthor(
+        Request $request,
+        SerializerInterface $serializer,
+        EntityManagerInterface $entityManager,
+        UrlGeneratorInterface $urlGenerator,
+        ValidatorInterface $validator,
+        TagAwareCacheInterface $cache
+    ): JsonResponse {
+        // Désérialisation au format JSON-LD
+        $author = $serializer->deserialize($request->getContent(), Author::class, 'jsonld');
+
+        // Validation des données
         $errors = $validator->validate($author);
-        if($errors ->count() > 0){
-            return new JsonResponse($serializer->serialize($errors,'json'),JsonResponse::HTTP_BAD_REQUEST,[],true);
+        if ($errors->count() > 0) {
+            return new JsonResponse(
+                $serializer->serialize($errors, 'jsonld'),
+                JsonResponse::HTTP_BAD_REQUEST,
+                ['Content-Type' => 'application/ld+json'],
+                true
+            );
         }
-        
+
+        // Sauvegarde de l'entité
         $entityManager->persist($author);
         $entityManager->flush();
         $cache->invalidateTags(["authorCache"]);
 
-        $jsonAuthor= $serializer->serialize($author,'json');
+        // Génération de la réponse JSON-LD
+        $jsonAuthor = $serializer->serialize($author, 'jsonld', ['groups' => ['getAllAuthors']]);
 
-        $location = $urlGenerator->generate('author.get', ['idAuthor'=> $author->getId()], UrlGeneratorInterface::ABSOLUTE_URL);
+        $location = $urlGenerator->generate(
+            'author.get',
+            ['idAuthor' => $author->getId()],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
 
-        return new JsonResponse($jsonAuthor,Response::HTTP_CREATED,["Location" => $location],true);
-
+        return new JsonResponse(
+            $jsonAuthor,
+            Response::HTTP_CREATED,
+            ["Location" => $location, 'Content-Type' => 'application/ld+json'],
+            true
+        );
     }
 
     /** 

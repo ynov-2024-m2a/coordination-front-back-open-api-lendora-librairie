@@ -8,15 +8,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
-use ApiPlatform\Core\Annotation\ApiResource;
 
 #[ORM\Entity(repositoryClass: AuthorRepository::class)]
-#[ApiResource(
-    collectionOperations: ['get', 'post'],
-    itemOperations: ['get', 'put', 'delete'],
-    normalizationContext: ['groups' => ['getAllAuthors']],
-    denormalizationContext: ['groups' => ['getAllAuthors']]
-)]
 class Author
 {
     #[ORM\Id]
