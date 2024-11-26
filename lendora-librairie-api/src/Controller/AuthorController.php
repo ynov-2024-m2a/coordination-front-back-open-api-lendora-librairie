@@ -69,13 +69,13 @@ class AuthorController extends AbstractController
     public function getAuthor(Author $author, SerializerInterface $serializer, TagAwareCacheInterface $cache): JsonResponse
     {
 
-        $jsonBook = $serializer->serialize(
+        $jsonAuthor = $serializer->serialize(
             $author,
             'jsonld', // Spécifiez le format JSON-LD
             ['groups' => ['getAllAuthors']] // Utilisez vos groupes de sérialisation
         );
 
-        return new JsonResponse($jsonBook, JsonResponse::HTTP_OK, ['Content-Type' => 'application/ld+json'], true);
+        return new JsonResponse($jsonAuthor, JsonResponse::HTTP_OK, ['Content-Type' => 'application/ld+json'], true);
     }
     /**
      * Create new author
