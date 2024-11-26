@@ -52,7 +52,9 @@ class AuthorController extends AbstractController
             return $serializer->serialize($authorsList, 'json', ['groups' => 'getAllAuthors']);
         });
         //$jsonAuthors = $serializer->serialize($authors, 'json', ["groups" => "getAllAuthors"]);
-        return new JsonResponse($jsonAuthors, Response::HTTP_OK, [], true);
+        $response = new JsonResponse($jsonAuthors, Response::HTTP_OK, [], true);
+        $response->headers->set('Cache-Control', 'public, max-age=3600, s-maxage=3600');
+        return $response;
     }
 
     /**
